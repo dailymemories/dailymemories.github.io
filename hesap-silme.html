@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Daily — Hesap silme / Delete account</title>
+<style>
+  :root { --bg:#FBF7F1; --surface:#fff; --ink:#33302A; --muted:#6F675C; --line:#ECE5D9; --clay:#D9773F; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16110B; --surface:#211A12; --ink:#F2E8D8; --muted:#A99C86; --line:#322A1F; --clay:#E7986A; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:720px; margin:0 auto; padding:48px 22px 80px; }
+  h1 { font-size:30px; line-height:1.2; letter-spacing:-.02em; margin:0 0 6px; }
+  h2 { font-size:19px; margin:34px 0 8px; letter-spacing:-.01em; }
+  p, li { color:var(--muted); }
+  .lead { font-size:17px; }
+  .date { color:var(--muted); font-size:14px; margin:0 0 28px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px 20px; margin:18px 0; }
+  a { color:var(--clay); }
+  table { width:100%; border-collapse:collapse; margin:10px 0 0; font-size:15px; }
+  th, td { text-align:left; padding:9px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--ink); font-weight:600; width:38%; }
+  td { color:var(--muted); }
+  footer { margin-top:44px; padding-top:18px; border-top:1px solid var(--line); font-size:14px; color:var(--muted); }
+
+  .langbar { display:flex; gap:8px; margin:0 0 26px; }
+  .langbar a { text-decoration:none; font-size:13px; font-weight:600; padding:7px 14px;
+    border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--muted); }
+  .langbar a.on { background:var(--clay); border-color:var(--clay); color:#fff; }
+  .divider { margin:52px 0 40px; border:0; border-top:1px solid var(--line); }
+  .seclabel { display:inline-block; font-size:12px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--clay); margin:0 0 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langbar"><a class="on" href="#tr">Türkçe</a><a href="#en">English</a></div>
+
+  <section id="tr">
+    <span class="seclabel">Türkçe</span>
+    <h1>Daily hesabını ve verilerini silme</h1>
+    <p class="date">Uygulama: Daily</p>
+    <p class="lead">Hesabını ve Daily’deki tüm verilerini istediğin an kalıcı olarak silebilirsin. İki yolu var.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">1. Uygulamadan (hemen)</h2>
+      <p>Daily’yi aç → <b>Profil</b> → sağ üstteki <b>Ayarlar</b> → <b>Hesabı sil</b> → onayla. Silme anında ve kalıcı olarak yapılır, geri alınamaz.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">2. Uygulama olmadan (e-postayla)</h2>
+      <p>Uygulamayı silmiş olsan da talepte bulunabilirsin: hesabına bağlı e-posta adresinden <a href="mailto:ogunayran@gmail.com?subject=Daily%20hesap%20silme&body=Kullan%C4%B1c%C4%B1%20ad%C4%B1m%3A%20">ogunayran@gmail.com</a> adresine <b>“Daily hesap silme”</b> konulu bir e-posta gönder ve kullanıcı adını yaz. Hesabın sana ait olduğunu doğruladıktan sonra en geç <b>30 gün</b> içinde sileriz ve sana haber veririz.</p>
+    </div>
+
+    <h2>Silinen veriler</h2>
+    <ul>
+      <li>Hesabın ve giriş bilgilerin (Apple ya da Google ile bağlantı, e-posta adresi)</li>
+      <li>Profilin: kullanıcı adı, profil fotoğrafı, biyografi, rozetler</li>
+      <li>Bütün anıların: başlık, puan, ruh hali, notlar, etiketler, fotoğraflar ve sesli notlar</li>
+      <li>Anılarına gelen yorumlar ve beğeniler</li>
+      <li>Arkadaşlarının anılarına yazdığın yorumlar ve bıraktığın beğeniler</li>
+      <li>Arkadaş listen, arkadaşlık isteklerin ve engellediğin kişiler</li>
+      <li>Aldığın ve gönderdiğin bildirimler</li>
+      <li>Bildirim almak için kullanılan cihaz kaydının hesabınla bağlantısı</li>
+    </ul>
+
+    <h2>Saklanan veriler</h2>
+    <ul>
+      <li>Başka kullanıcılar hakkında gönderdiğin <b>şikayet kayıtları</b>, topluluğu kötüye kullanıma karşı korumak için saklanır. Bu kayıtlarda adın, e-postan ya da kullanıcı adın yer almaz; yalnızca artık hiçbir hesaba bağlı olmayan rastgele bir kimlik bulunur.</li>
+      <li>Başkalarının yorumlarına bıraktığın beğeniler, o yorumların beğeni sayısında kalabilir; bunlar da yalnızca aynı rastgele kimliği içerir.</li>
+    </ul>
+    <p>Verilerinin ayrıca bir yedeğini tutmuyoruz. Sorun ya da talebin için: <a href="mailto:ogunayran@gmail.com">ogunayran@gmail.com</a></p>
+  </section>
+
+  <hr class="divider" />
+
+  <section id="en">
+    <span class="seclabel">English</span>
+    <h1>Delete your Daily account and data</h1>
+    <p class="date">App: Daily</p>
+    <p class="lead">You can permanently delete your account and all of your data in Daily at any time. There are two ways.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">1. In the app (instant)</h2>
+      <p>Open Daily → <b>Profile</b> → <b>Settings</b> (top right) → <b>Delete account</b> → confirm. Deletion is immediate and permanent; it cannot be undone.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">2. Without the app (by email)</h2>
+      <p>Even if you have uninstalled the app: from the email address linked to your account, send an email to <a href="mailto:ogunayran@gmail.com?subject=Daily%20account%20deletion&body=My%20username%3A%20">ogunayran@gmail.com</a> with the subject <b>“Daily account deletion”</b> and include your username. Once we have confirmed the account is yours, we delete it within <b>30 days</b> and let you know.</p>
+    </div>
+
+    <h2>What is deleted</h2>
+    <ul>
+      <li>Your account and sign-in details (the link to Apple or Google, your email address)</li>
+      <li>Your profile: username, profile photo, bio, badges</li>
+      <li>All of your memories: title, score, mood, notes, tags, photos and voice notes</li>
+      <li>Comments and likes on your memories</li>
+      <li>Comments you wrote and likes you left on your friends’ memories</li>
+      <li>Your friends list, friend requests and the people you blocked</li>
+      <li>Notifications you received and sent</li>
+      <li>The link between your account and the device registration used for notifications</li>
+    </ul>
+
+    <h2>What is kept</h2>
+    <ul>
+      <li><b>Reports</b> you submitted about other users are kept to protect the community from abuse. They do not contain your name, email or username — only a random ID that no longer belongs to any account.</li>
+      <li>Likes you left on other people’s comments may remain in those comments’ like counts, carrying only the same random ID.</li>
+    </ul>
+    <p>We keep no separate backup of your data. Questions or requests: <a href="mailto:ogunayran@gmail.com">ogunayran@gmail.com</a></p>
+  </section>
+
+  <footer>Daily · <a href="destek.html">Destek / Support</a> · <a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="kosullar.html">Koşullar / Terms</a></footer>
+</div>
+</body>
+</html>

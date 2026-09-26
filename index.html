@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Daily</title>
+<style>
+  :root { --bg:#FBF7F1; --surface:#fff; --ink:#33302A; --muted:#6F675C; --line:#ECE5D9; --clay:#D9773F; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16110B; --surface:#211A12; --ink:#F2E8D8; --muted:#A99C86; --line:#322A1F; --clay:#E7986A; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:720px; margin:0 auto; padding:48px 22px 80px; }
+  h1 { font-size:30px; line-height:1.2; letter-spacing:-.02em; margin:0 0 6px; }
+  h2 { font-size:19px; margin:34px 0 8px; letter-spacing:-.01em; }
+  p, li { color:var(--muted); }
+  .lead { font-size:17px; }
+  .date { color:var(--muted); font-size:14px; margin:0 0 28px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px 20px; margin:18px 0; }
+  a { color:var(--clay); }
+  table { width:100%; border-collapse:collapse; margin:10px 0 0; font-size:15px; }
+  th, td { text-align:left; padding:9px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--ink); font-weight:600; width:38%; }
+  td { color:var(--muted); }
+  footer { margin-top:44px; padding-top:18px; border-top:1px solid var(--line); font-size:14px; color:var(--muted); }
+
+  .langbar { display:flex; gap:8px; margin:0 0 26px; }
+  .langbar a { text-decoration:none; font-size:13px; font-weight:600; padding:7px 14px;
+    border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--muted); }
+  .langbar a.on { background:var(--clay); border-color:var(--clay); color:#fff; }
+  .divider { margin:52px 0 40px; border:0; border-top:1px solid var(--line); }
+  .seclabel { display:inline-block; font-size:12px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--clay); margin:0 0 10px; }
+</style>
+</head><body><div class="wrap" style="padding-top:80px">
+<h1>Daily</h1>
+<p>Anılarını unutmadan kaydet. Her güne bir başlık, bir puan ve birkaç satır — yakınlarınla paylaş, yıllar sonra yeniden bul.</p>
+<p style="margin-top:-6px">Save your memories before they fade. A title, a score and a few lines for every day — share them with the people who matter, and find them again years later.</p>
+<div class="langbar" style="margin-top:30px">
+  <a href="./gizlilik.html">Gizlilik / Privacy</a>
+  <a href="./destek.html">Destek / Support</a>
+  <a href="mailto:ogunayran@gmail.com">E-posta</a>
+</div>
+<footer>© 2026 Daily</footer>
+</div></body></html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Daily — Davet / Invite</title>
+<!-- Link previews (WhatsApp, iMessage…). Crawlers don't run scripts, so these stay generic. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Daily" />
+<meta property="og:title" content="Daily’de arkadaş olalım" />
+<meta property="og:description" content="Günlerimizi birlikte biriktirelim. Dokun, profilimi Daily’de aç." />
+<meta property="og:image" content="https://dailymemories.github.io/assets/og-davet.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://dailymemories.github.io/davet.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="apple-itunes-app" content="app-id=6815341325" />
+<style>
+  :root { --bg:#FBF7F1; --surface:#fff; --ink:#33302A; --muted:#6F675C; --faint:#A79C90; --line:#ECE5D9; --clay:#D9773F; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16110B; --surface:#211A12; --ink:#F2E8D8; --muted:#A99C86; --faint:#7E725F; --line:#322A1F; --clay:#E7986A; }
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:420px; margin:0 auto; padding:56px 24px 48px; text-align:center; }
+  .deffy { width:132px; height:auto; margin:0 auto 6px; display:block; filter:drop-shadow(0 12px 18px rgba(120,70,40,.22)); }
+  /* The wordmark, always lowercase: uppercasing it in Turkish would turn the i into İ. */
+  .brand { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--ink); margin:0 0 16px; }
+  .brand span { color:var(--clay); }
+  h1 { font-size:27px; line-height:1.2; letter-spacing:-.02em; margin:0 0 10px; }
+  h1 .who { color:var(--clay); }
+  .lead { color:var(--muted); margin:0 0 30px; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:56px; margin:0 0 12px;
+    border-radius:18px; font-size:17px; font-weight:650; text-decoration:none; }
+  .primary { background:var(--clay); color:#fff; box-shadow:0 10px 24px rgba(217,119,63,.28); }
+  .store { background:var(--surface); color:var(--ink); border:1px solid var(--line); }
+  .hint { font-size:14px; color:var(--faint); margin:18px 0 0; }
+  .hidden { display:none; }
+  footer { margin-top:48px; font-size:13px; color:var(--faint); }
+  footer a { color:var(--faint); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <img class="deffy" src="assets/deffy.png" alt="Deffy" width="132" height="149" />
+  <p class="brand" lang="en">daily<span>.</span></p>
+  <h1 id="title"></h1>
+  <p class="lead" id="lead"></p>
+
+  <a class="btn primary hidden" id="open"></a>
+  <a class="btn store hidden" id="ios" href="https://apps.apple.com/app/id6815341325"></a>
+  <a class="btn store hidden" id="android" href="https://play.google.com/store/apps/details?id=com.ogunayran.daily"></a>
+
+  <p class="hint" id="hint"></p>
+  <footer><a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
+</main>
+<script>
+(function () {
+  var TEXT = {
+    tr: {
+      titleWho: '<span class="who"></span> seni Daily’de arkadaş olarak eklemek istiyor',
+      title: 'Daily’ye hoş geldin',
+      lead: 'Günlerinizi birlikte biriktirin: her güne bir başlık, bir puan ve birkaç satır.',
+      open: 'Daily’de aç', ios: 'App Store’dan indir', android: 'Google Play’den indir',
+      hint: 'Daily yüklü değilse önce indir, sonra bu sayfaya dönüp “Daily’de aç”a dokun.',
+      hintAndroid: 'Daily yüklü değilse “Daily’de aç” seni Google Play’e götürür. Kurduktan sonra bu linke tekrar dokun.'
+    },
+    en: {
+      titleWho: '<span class="who"></span> wants to be your friend on Daily',
+      title: 'Welcome to Daily',
+      lead: 'Keep your days together: a title, a score and a few lines for each one.',
+      open: 'Open in Daily', ios: 'Download on the App Store', android: 'Get it on Google Play',
+      hint: 'Don’t have Daily yet? Download it, then come back here and tap “Open in Daily”.',
+      hintAndroid: 'Without Daily, “Open in Daily” takes you to Google Play. Once it’s installed, tap this link again.'
+    }
+  };
+  var lang = (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var T = TEXT[lang];
+  document.documentElement.lang = lang;
+
+  var raw = new URLSearchParams(location.search).get('u') || '';
+  var name = raw.trim().replace(/^@/, '').toLowerCase();
+  var valid = /^[a-z0-9_]{3,20}$/.test(name);
+
+  var ua = navigator.userAgent;
+  var android = /android/i.test(ua);
+  var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var play = document.getElementById('android').href;
+
+  var title = document.getElementById('title');
+  if (valid) {
+    title.innerHTML = T.titleWho;                       // fixed markup only…
+    title.querySelector('.who').textContent = '@' + name; // …the name goes in as text
+  } else {
+    title.textContent = T.title;
+  }
+  document.getElementById('lead').textContent = T.lead;
+
+  var open = document.getElementById('open');
+  if (valid && (ios || android)) {
+    var q = 'add?u=' + encodeURIComponent(name);
+    open.href = android
+      // Chrome opens the app when it's installed and Google Play when it isn't.
+      ? 'intent://' + q + '#Intent;scheme=com.ogunayran.daily;package=com.ogunayran.daily;S.browser_fallback_url=' + encodeURIComponent(play) + ';end'
+      : 'com.ogunayran.daily://' + q;
+    open.textContent = T.open;
+    open.classList.remove('hidden');
+  }
+
+  var iosBtn = document.getElementById('ios'), andBtn = document.getElementById('android');
+  iosBtn.textContent = T.ios; andBtn.textContent = T.android;
+  if (!android) iosBtn.classList.remove('hidden');
+  if (!ios) andBtn.classList.remove('hidden');
+
+  document.getElementById('hint').textContent = valid && (ios || android) ? (android ? T.hintAndroid : T.hint) : '';
+})();
+</script>
+</body>
+</html>
