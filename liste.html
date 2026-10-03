@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Daily — Bekleme listesi / Waitlist</title>
+<meta name="description" content="Daily çok yakında. Bekleme listesine katıl, açılınca ilk sen haber al." />
+<!-- Link previews (WhatsApp, iMessage, Instagram…). Crawlers don't run scripts, so these stay Turkish. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Daily" />
+<meta property="og:title" content="Daily çok yakında" />
+<meta property="og:description" content="Bekleme listesine katıl, açılınca ilk sen haber al." />
+<meta property="og:image" content="https://dailymemories.github.io/assets/og-davet.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://dailymemories.github.io/liste.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<style>
+  :root { --bg:#FBF7F1; --surface:#fff; --ink:#33302A; --muted:#6F675C; --faint:#A79C90; --line:#ECE5D9; --clay:#D9773F; --clay-soft:#FBE7D9; --danger:#C65050; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16110B; --surface:#211A12; --ink:#F2E8D8; --muted:#A99C86; --faint:#7E725F; --line:#322A1F; --clay:#E7986A; --clay-soft:#3A2515; --danger:#E5776B; }
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:420px; margin:0 auto; padding:56px 24px 48px; text-align:center; }
+  .deffy { width:132px; height:auto; margin:0 auto 6px; display:block; filter:drop-shadow(0 12px 18px rgba(120,70,40,.22)); }
+  /* The wordmark, always lowercase: uppercasing it in Turkish would turn the i into İ. */
+  .brand { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--ink); margin:0 0 16px; }
+  .brand span { color:var(--clay); }
+  h1 { font-size:27px; line-height:1.2; letter-spacing:-.02em; margin:0 0 10px; }
+  .lead { color:var(--muted); margin:0 0 28px; }
+  form { text-align:left; }
+  .field { width:100%; min-height:52px; padding:0 16px; border:1px solid var(--line); border-radius:16px;
+    background:var(--surface); color:var(--ink); font:inherit; font-size:16px; outline:none; }
+  .field:focus { border-color:var(--clay); box-shadow:0 0 0 3px color-mix(in srgb, var(--clay) 25%, transparent); }
+  .label { display:block; font-size:14px; font-weight:600; color:var(--muted); margin:18px 0 8px; }
+  .pills { display:flex; gap:8px; }
+  .pills label { flex:1; }
+  .pills input { position:absolute; opacity:0; pointer-events:none; }
+  .pills span { display:flex; align-items:center; justify-content:center; min-height:48px; border-radius:999px;
+    border:1px solid var(--line); background:var(--surface); font-weight:600; color:var(--muted); cursor:pointer; }
+  .pills input:checked + span { background:var(--clay); border-color:var(--clay); color:#fff; }
+  .pills input:focus-visible + span { box-shadow:0 0 0 3px color-mix(in srgb, var(--clay) 35%, transparent); }
+  .consent { display:flex; gap:10px; align-items:flex-start; margin:18px 0 0; font-size:14px; color:var(--muted); cursor:pointer; }
+  .consent input { width:20px; height:20px; margin:1px 0 0; accent-color:var(--clay); flex-shrink:0; }
+  .consent a { color:var(--clay); }
+  .btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:56px; margin:22px 0 0;
+    border:0; border-radius:18px; font:inherit; font-size:17px; font-weight:650; cursor:pointer; text-decoration:none; }
+  .primary { background:var(--clay); color:#fff; box-shadow:0 10px 24px rgba(217,119,63,.28); }
+  .primary[disabled] { opacity:.6; cursor:default; }
+  .soft { background:var(--surface); color:var(--ink); border:1px solid var(--line); }
+  .error { color:var(--danger); font-size:14px; margin:12px 0 0; min-height:1px; }
+  /* A field only bots fill in. */
+  .trap { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+  .done { display:none; }
+  .done .badge { display:inline-block; background:var(--clay-soft); color:var(--clay); font-weight:700; font-size:13px;
+    letter-spacing:.06em; padding:6px 12px; border-radius:999px; margin:0 0 14px; }
+  .hidden { display:none !important; }
+  footer { margin-top:48px; font-size:13px; color:var(--faint); }
+  footer a { color:var(--faint); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <img class="deffy" src="assets/deffy.png" alt="Deffy" width="132" height="149" />
+  <p class="brand" lang="en">daily<span>.</span></p>
+
+  <section id="ask">
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+    <form id="form" novalidate>
+      <input class="field" id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="120" required />
+      <span class="label" id="platformLabel"></span>
+      <div class="pills" role="radiogroup">
+        <label><input type="radio" name="platform" value="ios" /><span>iPhone</span></label>
+        <label><input type="radio" name="platform" value="android" /><span>Android</span></label>
+      </div>
+      <label class="consent"><input type="checkbox" id="consent" /><span id="consentText"></span></label>
+      <div class="trap" aria-hidden="true"><input id="website" tabindex="-1" autocomplete="off" /></div>
+      <button class="btn primary" id="submit" type="submit"></button>
+      <p class="error" id="error" role="alert"></p>
+    </form>
+  </section>
+
+  <section class="done" id="done">
+    <span class="badge" id="doneBadge"></span>
+    <h1 id="doneTitle"></h1>
+    <p class="lead" id="doneLead"></p>
+    <button class="btn soft" id="share" type="button"></button>
+  </section>
+
+  <footer><a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
+</main>
+<script>
+(function () {
+  var TEXT = {
+    tr: {
+      title: 'Daily çok yakında!',
+      lead: 'Her güne bir başlık, bir puan ve birkaç satır. Bekleme listesine katıl, açılınca ilk sen haber al.',
+      email: 'E-posta adresin',
+      platform: 'Hangi telefonu kullanıyorsun?',
+      consent: 'Daily açılınca bana e-posta gönderin. Adresim yalnızca bunun için kullanılır. <a href="gizlilik.html#bekleme">Gizlilik</a>',
+      submit: 'Listeye katıl',
+      sending: 'Ekleniyor…',
+      badEmail: 'Geçerli bir e-posta adresi yaz.',
+      noPlatform: 'Telefonunu seç.',
+      noConsent: 'Devam etmek için onay kutusunu işaretle.',
+      failed: 'Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene.',
+      badge: 'LİSTEDESİN',
+      doneTitle: 'Harika, seni ekledik!',
+      doneLead: 'Daily açıldığı gün ilk sana yazacağız. Deffy şimdiden sayfaları hazırlıyor.',
+      again: 'Bu cihazdan zaten listeye katılmışsın. Daily açılınca haber vereceğiz.',
+      share: 'Arkadaşına da haber ver',
+      shareText: 'Daily çok yakında! Bekleme listesine sen de katıl:',
+      copied: 'Link kopyalandı'
+    },
+    en: {
+      title: 'Daily is coming soon!',
+      lead: 'A title, a score and a few lines for every day. Join the waitlist and be the first to know when it opens.',
+      email: 'Your email address',
+      platform: 'Which phone do you use?',
+      consent: 'Email me when Daily opens. My address is used for nothing else. <a href="gizlilik.html#bekleme-en">Privacy</a>',
+      submit: 'Join the waitlist',
+      sending: 'Adding…',
+      badEmail: 'Enter a valid email address.',
+      noPlatform: 'Choose your phone.',
+      noConsent: 'Tick the box to continue.',
+      failed: 'We couldn’t connect. Check your internet and try again.',
+      badge: 'YOU’RE ON THE LIST',
+      doneTitle: 'Lovely, you’re in!',
+      doneLead: 'We’ll write to you first on the day Daily opens. Deffy is already getting the pages ready.',
+      again: 'You’ve already joined from this device. We’ll let you know when Daily opens.',
+      share: 'Tell a friend',
+      shareText: 'Daily is coming soon! Join the waitlist too:',
+      copied: 'Link copied'
+    }
+  };
+  var lang = (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var T = TEXT[lang];
+  document.documentElement.lang = lang;
+  var $ = function (id) { return document.getElementById(id); };
+
+  $('title').textContent = T.title;
+  $('lead').textContent = T.lead;
+  $('email').placeholder = T.email;
+  $('platformLabel').textContent = T.platform;
+  $('consentText').innerHTML = T.consent; // fixed markup only
+  $('submit').textContent = T.submit;
+  $('doneBadge').textContent = T.badge;
+  $('doneTitle').textContent = T.doneTitle;
+  $('share').textContent = T.share;
+
+  // The phone they're on, pre-chosen; they can change it.
+  var ua = navigator.userAgent;
+  var guess = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'ios' : /android/i.test(ua) ? 'android' : '';
+  if (guess) document.querySelector('input[name=platform][value=' + guess + ']').checked = true;
+
+  // Where the visit came from (?k=instagram), so the panel can tell which posts bring people.
+  var params = new URLSearchParams(location.search);
+  var source = (params.get('k') || params.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+
+  // Writes straight to Firestore over REST: the rules allow anyone to add an
+  // entry and nobody but the official account to read the list.
+  var KEY = 'AIzaSyCZFutbuYCrkt6k5Wt6xqnU6y6H_tHrnjI';
+  var PROJECT = 'daily-a85d4';
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && params.has('emu');
+  var BASE = local ? 'http://127.0.0.1:8080' : 'https://firestore.googleapis.com';
+  var DOCS = 'projects/' + PROJECT + '/databases/(default)/documents';
+  var STORED = 'daily.waitlist';
+
+  function showDone(text) {
+    $('ask').classList.add('hidden');
+    $('done').style.display = 'block';
+    $('doneLead').textContent = text;
+  }
+  try { if (localStorage.getItem(STORED)) showDone(T.again); } catch (e) { /* private mode */ }
+
+  function id() {
+    if (crypto.randomUUID) return crypto.randomUUID().replace(/-/g, '');
+    var a = new Uint8Array(16); crypto.getRandomValues(a);
+    return Array.prototype.map.call(a, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+  }
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var error = $('error');
+    error.textContent = '';
+    var email = $('email').value.trim().toLowerCase();
+    var picked = document.querySelector('input[name=platform]:checked');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) { error.textContent = T.badEmail; $('email').focus(); return; }
+    if (!picked) { error.textContent = T.noPlatform; return; }
+    if (!$('consent').checked) { error.textContent = T.noConsent; return; }
+    // Only a bot fills the hidden field: thank it and write nothing.
+    if ($('website').value) { showDone(T.doneLead); return; }
+
+    var fields = { email: { stringValue: email }, platform: { stringValue: picked.value }, lang: { stringValue: lang }, consent: { booleanValue: true } };
+    if (source) fields.source = { stringValue: source };
+    var body = { writes: [{
+      update: { name: DOCS + '/waitlist/' + id(), fields: fields },
+      currentDocument: { exists: false },
+      updateTransforms: [{ fieldPath: 'createdAt', setToServerValue: 'REQUEST_TIME' }]
+    }] };
+    var btn = $('submit');
+    btn.disabled = true; btn.textContent = T.sending;
+    fetch(BASE + '/v1/' + DOCS + ':commit?key=' + KEY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        try { localStorage.setItem(STORED, '1'); } catch (e2) { /* fine */ }
+        showDone(T.doneLead);
+      })
+      .catch(function () { error.textContent = T.failed; })
+      .finally(function () { btn.disabled = false; btn.textContent = T.submit; });
+  });
+
+  $('share').addEventListener('click', function () {
+    var url = 'https://dailymemories.github.io/liste.html';
+    if (navigator.share) { navigator.share({ title: 'Daily', text: T.shareText, url: url }).catch(function () {}); return; }
+    if (navigator.clipboard) navigator.clipboard.writeText(T.shareText + ' ' + url).then(function () { $('share').textContent = T.copied; });
+  });
+})();
+</script>
+</body>
+</html>
