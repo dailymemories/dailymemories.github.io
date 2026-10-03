@@ -563,7 +563,11 @@
   // ======================================================================= camera
   var p = 0, bookOn = false, pointer = { x: -1, y: -1, tx: 0, ty: 0, mx: 0, my: 0, has: false };
   addEventListener('pointermove', function (e) {
-    pointer.has = true; pointer.x = e.clientX; pointer.y = e.clientY; pointer.tx = (e.clientX / vw - .5) * 2; pointer.ty = (e.clientY / vh - .5) * 2;
+    // the real window, not the last measurement: a mouse moving during the loader (before anything is
+    // measured) once turned this into NaN, which then froze the whole camera for that visit
+    var w = innerWidth || 1, h = innerHeight || 1;
+    pointer.has = true; pointer.x = e.clientX; pointer.y = e.clientY;
+    pointer.tx = Math.max(-1, Math.min(1, (e.clientX / w - .5) * 2)); pointer.ty = Math.max(-1, Math.min(1, (e.clientY / h - .5) * 2));
     if (e.pointerType === 'mouse') stage.classList.toggle('pointer', !!hitWhat(e.clientX, e.clientY));
   }, { passive: true });
   var camZ = 0;
@@ -583,6 +587,7 @@
     var anchor = { x: mix(vw / 2, land.x, e), y: mix(vh / 2, land.y, e) };
     // a breathing, hand-held camera: the pointer leans it, it sways a little on its own
     pointer.mx += (pointer.tx - pointer.mx) * .05; pointer.my += (pointer.ty - pointer.my) * .05;
+    if (!isFinite(pointer.mx) || !isFinite(pointer.my)) pointer.mx = pointer.my = pointer.tx = pointer.ty = 0; // never let one bad number stick
     var free = 1 - e, amt = 46 * free;
     var par = { x: -pointer.mx * amt + Math.sin(t * .35) * 10 * free, y: -pointer.my * amt * .6 + Math.sin(t * .27 + 1) * 6 * free };
     place('sky', Z.sky, look, anchor, par); place('wall', Z.wall, look, anchor, par);
