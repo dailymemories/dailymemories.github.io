@@ -422,6 +422,7 @@
   var X = {}; // each layer's current screen transform: {s, tx, ty}
 
   function layout(force) {
+    if (!innerWidth || !innerHeight) return; // hidden or not yet sized: try again on a later frame
     vw = innerWidth; vh = innerHeight;
     var rebuild = force || vw !== built.w || Math.abs(vh - built.h) > 140;
     if (rebuild) {
@@ -433,7 +434,7 @@
       pageW = narrow ? Math.min(vw * .86, 460) : Math.min(vw * .88, 1180) / (2 + 2 * mF);
       var maxH = vh - (narrow ? 212 : 226); // the header above, the buttons and links below
       if (pageW * (ratio + 2 * mF) > maxH) pageW = maxH / (ratio + 2 * mF);
-      pageW = Math.floor(pageW); pageH = Math.round(pageW * ratio); m = Math.round(pageW * mF);
+      pageW = Math.max(80, Math.floor(pageW)); pageH = Math.round(pageW * ratio); m = Math.round(pageW * mF); // a tiny window still gets a book
       shellW = 2 * pageW + 2 * m; shellH = pageH + 2 * m;
       var u = (pageW / 500).toFixed(4);
       [shell, $('repShell')].forEach(function (el) { el.style.cssText = '--u:' + u + ';--m:' + m + 'px;width:' + shellW + 'px;height:' + shellH + 'px'; });
@@ -459,9 +460,9 @@
     if (narrow) { target = { x: NB.x + NB.m, y: NB.y + NB.m, w: NB.pw, h: 234 }; sEnd = pageW / (NB.pw * k); }
     else { target = { x: NB.x, y: NB.y, w: NB.w, h: NB.h }; sEnd = shellW / (NB.w * k); }
     // where it lands: the middle of the real book, which (narrow, left page in view) is that page's middle
-    // (offsets ignore the slide's transform)
-    var bs = $('bookstage').getBoundingClientRect();
-    land = { x: bs.left + shell.offsetLeft + shellW / 2, y: bs.top + shell.offsetTop + shellH / 2 };
+    // (the narrow slide moves the box by half a page; take it back out)
+    var r = shell.getBoundingClientRect(), slide = narrow ? (view ? -pageW / 2 : pageW / 2) : 0;
+    land = { x: r.left + r.width / 2 - slide, y: r.top + r.height / 2 };
   }
   function sizeCanvas(c, x, y, w, h, res) { c.style.left = x + 'px'; c.style.top = y + 'px'; c.style.width = w + 'px'; c.style.height = h + 'px'; c.width = Math.round(w * res); c.height = Math.round(h * res); c.res = res; c.wx = x; c.wy = y; }
 
@@ -796,9 +797,27 @@
   // ======================================================================= the loop
   // Smooth wheel scrolling is for mice only; fingers already scroll smoothly, so phones never download it.
   var lenis = null, ready = false, shownStep = -1, lastY = -1, still = 0;
+  // The page can be measured at the wrong size and never told: Chrome prerenders a typed address in the
+  // background, a tab can open hidden, a resize can be missed. So each frame checks the real window
+  // against the last measurement, and a broken measurement (no book size) is redone instead of frozen.
+  var relayoutT = 0;
+  function sizeCheck(typing) {
+    var off = innerWidth !== vw || Math.abs(innerHeight - vh) > 2;
+    var broken = !target || !(shellW > 0) || !isFinite(sEnd) || !(k > 0) || !land || !isFinite(land.x);
+    if (broken) { layout(true); return !!target && shellW > 0; }
+    if (off && !typing && !relayoutT) relayoutT = setTimeout(function () { relayoutT = 0; layout(false); placeForm(); }, 150);
+    return true;
+  }
+  var reported = false, lastErr = '';
+  // ?debug: what the page measured, in a corner, to compare with the real window
+  var debugBox = /[?&]debug\b/.test(location.search) ? document.body.appendChild(Object.assign(document.createElement('div'), {
+    style: 'position:fixed;left:8px;bottom:8px;z-index:999;max-width:96vw;font:12px/1.4 ui-monospace,monospace;color:#fff;background:rgba(0,0,0,.75);padding:6px 8px;border-radius:8px;pointer-events:none;word-break:break-all' })) : null;
   function frame(ms) {
     if (lenis) lenis.raf(ms);
     var typing = $('formOverlay').contains(document.activeElement);
+    // nothing to draw until the window has a size; and a slip in one frame never stops the next
+    if (!sizeCheck(typing)) { requestAnimationFrame(frame); return; }
+    try {
     var y = lenis ? lenis.scroll : scrollY;
     // the scene is done a little before the very bottom, so a browser bar coming and going can't knock the book away
     p = typing && bookOn ? 1 : clamp01(y / Math.max(1, document.documentElement.scrollHeight - innerHeight) / .96);
@@ -807,6 +826,9 @@
     still = bookOn && Math.abs(y - lastY) < .5 ? still + 1 : 0; lastY = y;
     if (still < 4) { render(t); drawLive(t); drawSteam(t); drawDust(t, lampLevel(t)); }
     drawMini(t);
+    } catch (err) { if (!reported) { reported = true; lastErr = String(err && err.message || err); console.error('daily scene', err); } built = { w: 0, h: 0 }; }
+    if (debugBox) debugBox.textContent = 'win ' + innerWidth + '×' + innerHeight + ' · measured ' + vw + '×' + vh + ' · book ' + shellW + ' · k ' + (+k).toFixed(3) +
+      ' · end ' + (+sEnd).toFixed(3) + ' · land ' + (land ? Math.round(land.x) + ',' + Math.round(land.y) : '-') + ' · p ' + p.toFixed(3) + ' · rep ' + rep.style.transform + (lastErr ? ' · ERR ' + lastErr : '');
     requestAnimationFrame(frame);
   }
 
@@ -917,7 +939,12 @@
     .concat([fontsIn]);
   var got = 0;
   first.forEach(function (pr) { pr.then(function () { got++; $('ldBar').style.width = Math.round(got / first.length * 100) + '%'; }); });
-  Promise.all(first).then(start);
+  Promise.all(first).then(function () {
+    // a prerendered page waits until it's actually opened, so it's measured in the real window
+    if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
+  });
+  addEventListener('pageshow', function (e) { if (e.persisted) layout(true); }); // back from the back/forward cache
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && built.w) layout(false); });
   function start() {
     setTimeout(function () {
       scrollTo(0, 0); layout(true); buildForm(); requestAnimationFrame(frame);
