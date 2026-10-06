@@ -90,7 +90,7 @@
     <button class="btn soft" id="share" type="button"></button>
   </section>
 
-  <footer><a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
+  <footer><a id="langSwitch" href="liste.html"></a> · <a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
 </main>
 <script>
 (function () {
@@ -136,7 +136,10 @@
       copied: 'Link copied'
     }
   };
-  var lang = (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var query = new URLSearchParams(location.search), asked = (query.get('lang') || '').toLowerCase();
+  var lang = asked === 'tr' || asked === 'en' ? asked : (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var other = new URLSearchParams(query); other.set('lang', lang === 'tr' ? 'en' : 'tr');
+  var sw = document.getElementById('langSwitch'); sw.textContent = lang === 'tr' ? 'English' : 'Türkçe'; sw.href = 'liste.html?' + other.toString();
   var T = TEXT[lang];
   document.documentElement.lang = lang;
   var $ = function (id) { return document.getElementById(id); };

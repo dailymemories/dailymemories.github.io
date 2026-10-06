@@ -107,6 +107,7 @@
   .top { position:absolute; left:0; right:0; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between;
     padding:calc(env(safe-area-inset-top) + 16px) 22px 0; pointer-events:none; }
   .brand { font:800 28px var(--head); letter-spacing:-.02em; color:var(--cream); text-decoration:none; pointer-events:auto; text-shadow:0 2px 10px rgba(0,0,0,.25); line-height:1; }
+  .toplinks { display:flex; gap:8px; }
   .plain { pointer-events:auto; font-size:13px; font-weight:700; color:var(--cream); background:rgba(30,22,16,.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
     border:1px solid rgba(255,246,234,.18); border-radius:999px; padding:8px 14px; text-decoration:none; }
   .intro { position:absolute; left:0; right:0; top:calc(env(safe-area-inset-top) + 12vh); z-index:20; text-align:center; padding:0 22px; pointer-events:none; }
@@ -287,7 +288,7 @@
   <div id="vig"></div>
   <div class="bubble" id="bubble"><span id="bubbleText"></span></div>
   <div class="bar" id="bar"></div>
-  <header class="top"><a class="brand" href="./" lang="en">daily<span>.</span></a><a class="plain" id="plain" href="liste.html"></a></header>
+  <header class="top"><a class="brand" href="./" lang="en">daily<span>.</span></a><span class="toplinks"><a class="plain" id="langSwitch" href="./"></a><a class="plain" id="plain" href="liste.html"></a></span></header>
   <div class="intro" id="intro"><h1 id="h1"></h1><p id="sub"></p></div>
   <div class="chip" id="chip"><span class="mouse" id="chipIcon"></span><b id="chipStep">1 / 3</b><span id="chipText"></span></div>
 </div>
@@ -355,7 +356,9 @@
       lampOn: 'Ooh, light!', lampOff: 'Hey, who turned it off?', mug: 'Don’t let my coffee go cold.', radio: 'I love this song!'
     }
   };
-  var lang = (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  // ?lang=en / ?lang=tr picks the language (for links shared abroad); otherwise the phone's language
+  var query = new URLSearchParams(location.search), asked = (query.get('lang') || '').toLowerCase();
+  var lang = asked === 'tr' || asked === 'en' ? asked : (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
   var T = TEXT[lang];
   // phones are the main audience: a finger taps the lamp, a mouse scrolls
   var touch = matchMedia('(pointer: coarse)').matches, STEPS = touch ? T.stepsTouch : T.steps;
@@ -371,6 +374,12 @@
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
   $('h1').innerHTML = T.h1.map(function (w, i) { return '<span class="w"><span style="transition-delay:' + (0.09 * i) + 's">' + w + '</span></span>'; }).join(' ');
+  // the other language, and the simple page, keep the visit's source (?k=) and language
+  var other = new URLSearchParams(query); other.set('lang', lang === 'tr' ? 'en' : 'tr');
+  var same = new URLSearchParams(query); same.set('lang', lang);
+  $('langSwitch').textContent = lang === 'tr' ? 'EN' : 'TR'; $('langSwitch').href = './?' + other.toString();
+  $('langSwitch').setAttribute('aria-label', lang === 'tr' ? 'English' : 'Türkçe');
+  $('plain').href = 'liste.html?' + same.toString();
   $('sub').textContent = touch ? T.subTouch : T.sub; if (touch) $('chipIcon').className = 'tap'; $('plain').textContent = T.plain;
   $('prev').textContent = T.prev; $('next').textContent = T.next; $('hint2').textContent = T.flip;
 
@@ -917,9 +926,13 @@
     phoneSet = phone; stage.classList.toggle('m', phone); L.fg.style.display = phone ? 'none' : '';
     IMGS.forEach(function (im) { if (im.getAttribute('src')) im.src = sceneSrc(im.dataset.s); });
   }
+  // decode() first so the picture is ready to paint, but never wait on it: Chrome sometimes leaves that
+  // promise hanging, which once kept the loader up forever
   function loadImg(im, src) {
     return new Promise(function (res) {
-      im.onload = im.onerror = function () { (im.decode ? im.decode() : Promise.resolve()).catch(function () {}).then(res); };
+      var settled = false, done = function () { if (!settled) { settled = true; res(); } };
+      im.onload = function () { if (im.decode) im.decode().then(done, done); else done(); setTimeout(done, 1200); };
+      im.onerror = done;
       im.src = src;
     });
   }
@@ -944,10 +957,15 @@
     .concat([fontsIn]);
   var got = 0;
   first.forEach(function (pr) { pr.then(function () { got++; $('ldBar').style.width = Math.round(got / first.length * 100) + '%'; }); });
-  Promise.all(first).then(function () {
+  // and whatever happens, the loader goes after 8 s: a slow picture can arrive late, the page can't stay shut
+  var opened = false;
+  setTimeout(function () { if (!opened) openPage(); }, 8000);
+  Promise.all(first).then(function () { openPage(); });
+  function openPage() {
+    if (opened) return; opened = true;
     // a prerendered page waits until it's actually opened, so it's measured in the real window
     if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
-  });
+  }
   addEventListener('pageshow', function (e) { if (e.persisted) layout(true); }); // back from the back/forward cache
   document.addEventListener('visibilitychange', function () { if (!document.hidden && built.w) layout(false); });
   function start() {
