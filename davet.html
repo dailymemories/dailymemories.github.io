@@ -50,9 +50,7 @@
 
   <a class="btn primary hidden" id="open"></a>
   <a class="btn store hidden" id="ios" href="https://apps.apple.com/app/id6815341325"></a>
-  <!-- Kapalı test sürerken mağaza sayfası herkese kapalı (Play boş bir pencere gösteriyor), o yüzden test bağlantısı.
-       Uygulama herkese açılınca https://play.google.com/store/apps/details?id=com.ogunayran.daily yap. -->
-  <a class="btn store hidden" id="android" href="https://play.google.com/apps/testing/com.ogunayran.daily"></a>
+  <a class="btn store hidden" id="android" href="https://play.google.com/store/apps/details?id=com.ogunayran.daily"></a>
 
   <p class="hint" id="hint"></p>
   <footer><a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
@@ -64,17 +62,17 @@
       titleWho: '<span class="who"></span> seni Daily’de arkadaş olarak eklemek istiyor',
       title: 'Daily’ye hoş geldin',
       lead: 'Günlerinizi birlikte biriktirin: her güne bir başlık, bir puan ve birkaç satır.',
-      open: 'Daily’de aç', ios: 'App Store’dan indir', android: 'Test kullanıcısı ol',
+      open: 'Daily’de aç', ios: 'App Store’dan indir', android: 'Google Play’den indir',
       hint: 'Daily yüklü değilse önce indir, sonra bu sayfaya dönüp “Daily’de aç”a dokun.',
-      hintAndroid: 'Daily Android’de şimdilik test aşamasında. Önce test kullanıcısı ol (davet eden seni listeye eklemiş olmalı), Google Play’den kur, sonra bu linke tekrar dokun.'
+      hintAndroid: 'Daily yüklü değilse önce Google Play’den indir, sonra bu sayfaya dönüp “Daily’de aç”a dokun.'
     },
     en: {
       titleWho: '<span class="who"></span> wants to be your friend on Daily',
       title: 'Welcome to Daily',
       lead: 'Keep your days together: a title, a score and a few lines for each one.',
-      open: 'Open in Daily', ios: 'Download on the App Store', android: 'Join the test',
+      open: 'Open in Daily', ios: 'Download on the App Store', android: 'Get it on Google Play',
       hint: 'Don’t have Daily yet? Download it, then come back here and tap “Open in Daily”.',
-      hintAndroid: 'Daily is in testing on Android for now. Join as a tester first (whoever invited you must have added you), install it from Google Play, then tap this link again.'
+      hintAndroid: 'Don’t have Daily yet? Get it on Google Play, then come back here and tap “Open in Daily”.'
     }
   };
   var lang = (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';

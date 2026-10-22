@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Daily — İndir / Download</title>
+<meta name="description" content="Daily yayında! App Store ve Google Play’den indir: her güne bir başlık, bir puan ve birkaç satır." />
+<meta name="apple-itunes-app" content="app-id=6815341325" />
+<!-- Link previews (WhatsApp, iMessage, Instagram…). Crawlers don't run scripts, so these stay Turkish. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Daily" />
+<meta property="og:title" content="Daily yayında!" />
+<meta property="og:description" content="App Store ve Google Play’den indir, ilk sayfanı bugün yaz." />
+<meta property="og:image" content="https://dailymemories.github.io/assets/og-indir.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://dailymemories.github.io/indir.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<style>
+  :root { --bg:#FBF7F1; --surface:#fff; --ink:#33302A; --muted:#6F675C; --faint:#A79C90; --line:#ECE5D9; --clay:#D9773F; --clay-soft:#FBE7D9; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16110B; --surface:#211A12; --ink:#F2E8D8; --muted:#A99C86; --faint:#7E725F; --line:#322A1F; --clay:#E7986A; --clay-soft:#3A2515; }
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:420px; margin:0 auto; padding:52px 24px 48px; text-align:center; }
+  .deffy { width:140px; height:auto; margin:0 auto 6px; display:block; filter:drop-shadow(0 12px 18px rgba(120,70,40,.22)); }
+  /* The wordmark, always lowercase: uppercasing it in Turkish would turn the i into İ. */
+  .brand { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--ink); margin:0 0 14px; }
+  .brand span { color:var(--clay); }
+  .badge { display:inline-block; background:var(--clay-soft); color:var(--clay); font-weight:700; font-size:13px;
+    letter-spacing:.06em; padding:6px 12px; border-radius:999px; margin:0 0 14px; }
+  h1 { font-size:30px; line-height:1.15; letter-spacing:-.02em; margin:0 0 10px; }
+  .lead { color:var(--muted); margin:0 0 30px; }
+  /* Store buttons, drawn like the stores' own badges: black, a hairline, the mark and two lines. */
+  .stores { display:flex; flex-direction:column; gap:12px; }
+  .store { display:flex; align-items:center; justify-content:center; gap:14px; min-height:64px; padding:0 20px;
+    border-radius:16px; background:#0B0B0C; color:#fff; border:1px solid #A6A6A6; text-decoration:none;
+    box-shadow:0 10px 24px rgba(0,0,0,.14); transition:transform .12s ease; }
+  .store:active { transform:scale(.98); }
+  .store svg { width:30px; height:30px; flex-shrink:0; }
+  .store span { display:flex; flex-direction:column; align-items:flex-start; line-height:1.1; text-align:left; }
+  .store small { font-size:12px; font-weight:500; opacity:.85; }
+  .store b { font-size:22px; font-weight:650; letter-spacing:-.01em; }
+  .hint { color:var(--faint); font-size:14px; margin:20px 0 0; }
+  .hint b { color:var(--muted); font-weight:600; }
+  .share { display:flex; align-items:center; justify-content:center; width:100%; min-height:52px; margin:28px 0 0;
+    border:1px solid var(--line); border-radius:16px; background:var(--surface); color:var(--ink);
+    font:inherit; font-size:16px; font-weight:600; cursor:pointer; }
+  footer { margin-top:44px; font-size:13px; color:var(--faint); }
+  footer a { color:var(--faint); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <img class="deffy" src="assets/deffy-wave.webp" alt="Deffy" width="140" height="168" />
+  <p class="brand" lang="en">daily<span>.</span></p>
+  <span class="badge" id="badge"></span>
+  <h1 id="title"></h1>
+  <p class="lead" id="lead"></p>
+
+  <div class="stores" id="stores">
+    <a class="store" id="ios" href="https://apps.apple.com/app/id6815341325">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.32 2.99-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      <span><small id="iosSmall"></small><b>App Store</b></span>
+    </a>
+    <a class="store" id="android" href="https://play.google.com/store/apps/details?id=com.ogunayran.daily">
+      <svg viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round" stroke-width="1.2">
+        <path d="M3.6 1.6 13.2 12 3.6 22.4c-.4-.2-.6-.6-.6-1.1V2.7c0-.5.2-.9.6-1.1z" fill="#00A0FF" stroke="#00A0FF"/>
+        <path d="M3.6 1.6c.3-.2.8-.2 1.2 0l11.4 6.6-3 3.8z" fill="#00D46A" stroke="#00D46A"/>
+        <path d="M3.6 22.4c.3.2.8.2 1.2 0l11.4-6.6-3-3.8z" fill="#FF3D44" stroke="#FF3D44"/>
+        <path d="M16.2 8.2 20 10.4c1.2.7 1.2 2.5 0 3.2l-3.8 2.2-3-3.8z" fill="#FFC400" stroke="#FFC400"/>
+      </svg>
+      <span><small id="androidSmall"></small><b>Google Play</b></span>
+    </a>
+  </div>
+  <p class="hint" id="hint"></p>
+
+  <button class="share" id="share" type="button"></button>
+
+  <footer><a id="langSwitch" href="indir.html"></a> · <a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
+</main>
+<script>
+(function () {
+  var TEXT = {
+    tr: {
+      badge: 'YAYINDA',
+      title: 'Daily yayında!',
+      lead: 'Her güne bir başlık, bir puan ve birkaç satır. Telefonuna indir, ilk sayfanı bugün yaz.',
+      iosSmall: 'Hemen indir',
+      androidSmall: 'Hemen indir',
+      desktop: 'Bilgisayardaysan bu sayfayı telefonundan aç: <b>dailymemories.github.io/indir</b>',
+      share: 'Arkadaşına gönder',
+      shareText: 'Daily yayında! Her güne bir sayfa. Buradan indirebilirsin:',
+      copied: 'Link kopyalandı'
+    },
+    en: {
+      badge: 'OUT NOW',
+      title: 'Daily is here!',
+      lead: 'A title, a score and a few lines for every day. Get it on your phone and write your first page today.',
+      iosSmall: 'Download on the',
+      androidSmall: 'Get it on',
+      desktop: 'On a computer? Open this page on your phone: <b>dailymemories.github.io/indir</b>',
+      share: 'Send to a friend',
+      shareText: 'Daily is out! A page for every day. Get it here:',
+      copied: 'Link copied'
+    }
+  };
+  var query = new URLSearchParams(location.search), asked = (query.get('lang') || '').toLowerCase();
+  var lang = asked === 'tr' || asked === 'en' ? asked : (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var other = new URLSearchParams(query); other.set('lang', lang === 'tr' ? 'en' : 'tr');
+  var sw = document.getElementById('langSwitch'); sw.textContent = lang === 'tr' ? 'English' : 'Türkçe'; sw.href = 'indir.html?' + other.toString();
+  var T = TEXT[lang];
+  document.documentElement.lang = lang;
+  var $ = function (id) { return document.getElementById(id); };
+
+  $('badge').textContent = T.badge;
+  $('title').textContent = T.title;
+  $('lead').textContent = T.lead;
+  $('iosSmall').textContent = T.iosSmall;
+  $('androidSmall').textContent = T.androidSmall;
+  $('share').textContent = T.share;
+
+  // The visitor's own store goes first; a computer gets both and a hint.
+  var ua = navigator.userAgent;
+  var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var android = /android/i.test(ua);
+  if (android) $('stores').insertBefore($('android'), $('ios'));
+  if (!ios && !android) $('hint').innerHTML = T.desktop; // fixed markup only
+
+  // Where the visit came from (?k=instagram) rides along to Play's install reports.
+  var source = (query.get('k') || query.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+  if (source) $('android').href += '&referrer=' + encodeURIComponent('utm_source=' + source + '&utm_medium=indir');
+
+  $('share').addEventListener('click', function () {
+    var url = 'https://dailymemories.github.io/indir.html';
+    if (navigator.share) { navigator.share({ title: 'Daily', text: T.shareText, url: url }).catch(function () {}); return; }
+    if (navigator.clipboard) navigator.clipboard.writeText(T.shareText + ' ' + url).then(function () { $('share').textContent = T.copied; });
+  });
+})();
+</script>
+</body>
+</html>
