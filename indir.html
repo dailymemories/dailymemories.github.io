@@ -138,6 +138,11 @@
     if (navigator.share) { navigator.share({ title: 'Daily', text: T.shareText, url: url }).catch(function () {}); return; }
     if (navigator.clipboard) navigator.clipboard.writeText(T.shareText + ' ' + url).then(function () { $('share').textContent = T.copied; });
   });
+
+  // A smart link: a phone goes straight on to its own store, so one link works in a story,
+  // a mail or a chat. The page is filled in first, so if an in-app browser stays behind
+  // while the store opens, the buttons are there. ?kal=1 keeps the page for a look.
+  if ((ios || android) && !query.has('kal')) location.replace(ios ? $('ios').href : $('android').href);
 })();
 </script>
 </body>
