@@ -133,6 +133,16 @@
   var source = (query.get('k') || query.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
   if (source) $('android').href += '&referrer=' + encodeURIComponent('utm_source=' + source + '&utm_medium=indir');
 
+  // Android: an https Play link opens Play's *web* page inside TikTok/Instagram's in-app browser,
+  // where installing needs a Google sign-in. Hand off to the Play Store app instead: market:// in
+  // in-app browsers, intent:// (with the web page as fallback) in Chrome and other real browsers.
+  if (android) {
+    var webPlay = $('android').href, q = webPlay.split('?')[1];
+    var inApp = /instagram|fban|fbav|fb_iab|musical_ly|bytedance|tiktok|trill|snapchat|twitter|line\//i.test(ua);
+    $('android').href = inApp ? 'market://details?' + q
+      : 'intent://details?' + q + '#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=' + encodeURIComponent(webPlay) + ';end';
+  }
+
   $('share').addEventListener('click', function () {
     var url = 'https://dailymemories.github.io/indir.html';
     if (navigator.share) { navigator.share({ title: 'Daily', text: T.shareText, url: url }).catch(function () {}); return; }
