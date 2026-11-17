@@ -43,6 +43,16 @@
   .store span { display:flex; flex-direction:column; align-items:flex-start; line-height:1.1; text-align:left; }
   .store small { font-size:12px; font-weight:500; opacity:.85; }
   .store b { font-size:22px; font-weight:650; letter-spacing:-.01em; }
+  /* Inside TikTok/Instagram the jump to the store is blocked until the visitor taps, so the
+     page points at the visitor's own store button and makes it the obvious thing to press. */
+  .tap { display:none; margin:0 0 12px; color:var(--clay); font-weight:700; font-size:17px; }
+  .inapp .tap { display:block; }
+  .inapp .share { display:none; }
+  .store.mine { background:var(--clay); border-color:var(--clay); box-shadow:0 12px 28px rgba(217,119,63,.35); }
+  @media (prefers-reduced-motion: no-preference) {
+    .inapp .store.mine { animation:nudge 1.8s ease-in-out infinite; }
+    @keyframes nudge { 0%,70%,100% { transform:scale(1); } 80% { transform:scale(1.04); } 90% { transform:scale(.99); } }
+  }
   .hint { color:var(--faint); font-size:14px; margin:20px 0 0; }
   .hint b { color:var(--muted); font-weight:600; }
   .share { display:flex; align-items:center; justify-content:center; width:100%; min-height:52px; margin:28px 0 0;
@@ -54,12 +64,13 @@
 </head>
 <body>
 <main class="wrap">
-  <img class="deffy" src="assets/deffy-wave.webp" alt="Deffy" width="140" height="168" />
+  <img class="deffy" src="https://dailymemories.github.io/assets/deffy-wave.webp" alt="Deffy" width="140" height="168" />
   <p class="brand" lang="en">daily<span>.</span></p>
   <span class="badge" id="badge"></span>
   <h1 id="title"></h1>
   <p class="lead" id="lead"></p>
 
+  <p class="tap" id="tap"></p>
   <div class="stores" id="stores">
     <a class="store" id="ios" href="https://apps.apple.com/app/id6815341325">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.32 2.99-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
@@ -79,7 +90,7 @@
 
   <button class="share" id="share" type="button"></button>
 
-  <footer><a id="langSwitch" href="indir.html"></a> · <a href="gizlilik.html">Gizlilik / Privacy</a> · <a href="destek.html">Destek / Support</a></footer>
+  <footer><a id="langSwitch" href="https://dailymemories.github.io/indir.html"></a> · <a href="https://dailymemories.github.io/gizlilik.html">Gizlilik / Privacy</a> · <a href="https://dailymemories.github.io/destek.html">Destek / Support</a></footer>
 </main>
 <script>
 (function () {
@@ -91,6 +102,7 @@
       iosSmall: 'Hemen indir',
       androidSmall: 'Hemen indir',
       desktop: 'Bilgisayardaysan bu sayfayı telefonundan aç: <b>dailymemories.github.io/indir</b>',
+      tap: 'İndirmek için düğmeye dokun 👇',
       share: 'Arkadaşına gönder',
       shareText: 'Daily yayında! Her güne bir sayfa. Buradan indirebilirsin:',
       copied: 'Link kopyalandı'
@@ -102,6 +114,7 @@
       iosSmall: 'Download on the',
       androidSmall: 'Get it on',
       desktop: 'On a computer? Open this page on your phone: <b>dailymemories.github.io/indir</b>',
+      tap: 'Tap the button below to download 👇',
       share: 'Send to a friend',
       shareText: 'Daily is out! A page for every day. Get it here:',
       copied: 'Link copied'
@@ -110,7 +123,7 @@
   var query = new URLSearchParams(location.search), asked = (query.get('lang') || '').toLowerCase();
   var lang = asked === 'tr' || asked === 'en' ? asked : (navigator.language || '').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
   var other = new URLSearchParams(query); other.set('lang', lang === 'tr' ? 'en' : 'tr');
-  var sw = document.getElementById('langSwitch'); sw.textContent = lang === 'tr' ? 'English' : 'Türkçe'; sw.href = 'indir.html?' + other.toString();
+  var sw = document.getElementById('langSwitch'); sw.textContent = lang === 'tr' ? 'English' : 'Türkçe'; sw.href = 'https://dailymemories.github.io/indir.html?' + other.toString();
   var T = TEXT[lang];
   document.documentElement.lang = lang;
   var $ = function (id) { return document.getElementById(id); };
@@ -121,12 +134,17 @@
   $('iosSmall').textContent = T.iosSmall;
   $('androidSmall').textContent = T.androidSmall;
   $('share').textContent = T.share;
+  $('tap').textContent = T.tap;
 
   // The visitor's own store goes first; a computer gets both and a hint.
   var ua = navigator.userAgent;
   var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var android = /android/i.test(ua);
+  // In-app browsers of TikTok, Instagram & co. block a scripted jump to a store; a tap goes through.
+  var inApp = /instagram|fban|fbav|fb_iab|musical_ly|bytedance|tiktok|trill|snapchat|twitter|line\//i.test(ua);
   if (android) $('stores').insertBefore($('android'), $('ios'));
+  if (ios || android) $(ios ? 'ios' : 'android').className += ' mine';
+  if ((ios || android) && inApp) document.body.className += ' inapp';
   if (!ios && !android) $('hint').innerHTML = T.desktop; // fixed markup only
 
   // Where the visit came from (?k=instagram) rides along to Play's install reports.
@@ -138,7 +156,6 @@
   // in-app browsers, intent:// (with the web page as fallback) in Chrome and other real browsers.
   if (android) {
     var webPlay = $('android').href, q = webPlay.split('?')[1];
-    var inApp = /instagram|fban|fbav|fb_iab|musical_ly|bytedance|tiktok|trill|snapchat|twitter|line\//i.test(ua);
     $('android').href = inApp ? 'market://details?' + q
       : 'intent://details?' + q + '#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=' + encodeURIComponent(webPlay) + ';end';
   }
@@ -150,9 +167,9 @@
   });
 
   // A smart link: a phone goes straight on to its own store, so one link works in a story,
-  // a mail or a chat. The page is filled in first, so if an in-app browser stays behind
-  // while the store opens, the buttons are there. ?kal=1 keeps the page for a look.
-  if ((ios || android) && !query.has('kal')) location.replace(ios ? $('ios').href : $('android').href);
+  // a mail or a chat. In-app browsers skip it: they block it, and on Android a blocked
+  // market:// jump can leave an error page instead of the buttons. ?kal=1 keeps the page for a look.
+  if ((ios || android) && !inApp && !query.has('kal')) location.replace(ios ? $('ios').href : $('android').href);
 })();
 </script>
 </body>
